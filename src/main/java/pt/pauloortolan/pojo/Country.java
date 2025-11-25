@@ -11,8 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Market {
+public class Country {
     private String name;
-    private int year;
-    private List<Country> countries;
+    private List<Store> stores;
 }

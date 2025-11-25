@@ -1,4 +1,4 @@
-package pt.pauloortolan.loader;
+package pt.pauloortolan.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,9 @@ import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Country {
-
-    private String name;
-    private List<Store> stores;
-
+@NoArgsConstructor
+public class Section {
+    private String section;
+    private List<Month> revenues;
 }
