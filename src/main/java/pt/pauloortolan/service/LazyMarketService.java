@@ -2,6 +2,7 @@ package pt.pauloortolan.service;
 
 import pt.pauloortolan.pojo.Country;
 import pt.pauloortolan.pojo.Market;
+import pt.pauloortolan.pojo.Section;
 import pt.pauloortolan.pojo.Store;
 
 import java.util.List;
@@ -45,6 +46,11 @@ public class LazyMarketService extends MarketService {
 
     @Override
     public double getTotalRevenueByCountryAndStore(Predicate<Country> countryPredicate, Predicate<Store> storePredicate) {
+        return 0;
+    }
+
+    @Override
+    public double getTotalRevenueByCountryAndStoreAndSection(Predicate<Country> countryPredicate, Predicate<Store> storePredicate, Predicate<Section> sectionPredicate) {
         return 0;
     }
 }

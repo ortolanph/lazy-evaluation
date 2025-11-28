@@ -3,6 +3,7 @@ package pt.pauloortolan.service;
 import lombok.Getter;
 import pt.pauloortolan.pojo.Country;
 import pt.pauloortolan.pojo.Market;
+import pt.pauloortolan.pojo.Section;
 import pt.pauloortolan.pojo.Store;
 
 import java.util.List;
@@ -30,5 +31,7 @@ public abstract class MarketService {
     public abstract double getTotalRevenueByCountry(Predicate<Country> countryPredicate);
 
     public abstract double getTotalRevenueByCountryAndStore(Predicate<Country> countryPredicate, Predicate<Store> storePredicate);
+
+    public abstract double getTotalRevenueByCountryAndStoreAndSection(Predicate<Country> countryPredicate, Predicate<Store> storePredicate, Predicate<Section> sectionPredicate);
 
 }
