@@ -8,6 +8,7 @@ import pt.pauloortolan.pojo.Store;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class LazyMarketService extends MarketService {
 
@@ -15,21 +16,28 @@ public class LazyMarketService extends MarketService {
         super(market);
     }
 
-    @Override
-    public List<String> getAllCountries() {
+    protected Stream<Country> countryStream() {
         return getMarket()
                 .getCountries()
-                .stream()
+                .stream();
+    }
+
+    protected Stream<Country> filteredCountryStream(Predicate<Country> predicate) {
+        return countryStream()
+                .filter(predicate);
+    }
+
+
+    @Override
+    public List<String> getAllCountries() {
+        return countryStream()
                 .map(Country::getName)
                 .toList();
     }
 
     @Override
     public List<String> getStoresByCountry(Predicate<Country> countryPredicate) {
-        return getMarket()
-                .getCountries()
-                .stream()
-                .filter(countryPredicate)
+        return filteredCountryStream(countryPredicate)
                 .map(Country::getStores)
                 .flatMap(List::stream)
                 .map(Store::getId)
