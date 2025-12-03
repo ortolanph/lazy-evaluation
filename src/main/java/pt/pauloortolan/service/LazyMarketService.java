@@ -22,9 +22,41 @@ public class LazyMarketService extends MarketService {
                 .stream();
     }
 
-    protected Stream<Country> filteredCountryStream(Predicate<Country> predicate) {
+    protected Stream<Country> filteredCountryStream(Predicate<Country> countryPredicate) {
         return countryStream()
-                .filter(predicate);
+                .filter(countryPredicate);
+    }
+
+    protected Stream<Store> storeStream(Stream<Country> countryStream) {
+        return countryStream
+                .map(Country::getStores)
+                .flatMap(List::stream);
+    }
+
+    protected Stream<Store> filteredStoreStream(Stream<Country> countryStream, Predicate<Store> storePredicate) {
+        return countryStream
+                .map(Country::getStores)
+                .flatMap(List::stream)
+                .filter(storePredicate);
+    }
+
+    protected Stream<Section> sectionStream(Stream<Store> storeStream) {
+        return storeStream
+                .map(Store::getSections)
+                .flatMap(List::stream);
+    }
+
+    protected Stream<Section> filteredSectionStream(Stream<Store> storeStream, Predicate<Section> sectionPredicate) {
+        return storeStream
+                .map(Store::getSections)
+                .flatMap(List::stream)
+                .filter(sectionPredicate);
+    }
+
+    protected Stream<Month> revenueStream(Stream<Section> sectionStream) {
+        return sectionStream
+                .map(Section::getRevenues)
+                .flatMap(List::stream);
     }
 
 
@@ -37,9 +69,7 @@ public class LazyMarketService extends MarketService {
 
     @Override
     public List<String> getStoresByCountry(Predicate<Country> countryPredicate) {
-        return filteredCountryStream(countryPredicate)
-                .map(Country::getStores)
-                .flatMap(List::stream)
+        return storeStream(filteredCountryStream(countryPredicate))
                 .map(Store::getId)
                 .distinct()
                 .toList();
@@ -47,12 +77,7 @@ public class LazyMarketService extends MarketService {
 
     @Override
     public List<String> getLocationsByCountry(Predicate<Country> countryPredicate) {
-        return getMarket()
-                .getCountries()
-                .stream()
-                .filter(countryPredicate)
-                .map(Country::getStores)
-                .flatMap(List::stream)
+        return storeStream(filteredCountryStream(countryPredicate))
                 .map(Store::getLocation)
                 .distinct()
                 .toList();
@@ -60,11 +85,7 @@ public class LazyMarketService extends MarketService {
 
     @Override
     public List<String> getSectionsByStore(Predicate<Store> storePredicate) {
-        return getMarket()
-                .getCountries()
-                .stream()
-                .map(Country::getStores)
-                .flatMap(List::stream)
+        return filteredStoreStream(countryStream(), storePredicate)
                 .map(Store::getSections)
                 .flatMap(List::stream)
                 .map(Section::getSection)
@@ -74,66 +95,55 @@ public class LazyMarketService extends MarketService {
 
     @Override
     public double getTotalRevenue() {
-        return getMarket()
-                .getCountries()
-                .stream()
-                .map(Country::getStores)
-                .flatMap(List::stream)
-                .map(Store::getSections)
-                .flatMap(List::stream)
-                .map(Section::getRevenues)
-                .flatMap(List::stream)
+        return revenueStream(
+                    sectionStream(
+                        storeStream(
+                            countryStream()
+                        )
+                    )
+                )
                 .mapToDouble(Month::getRevenue)
                 .sum();
     }
 
     @Override
     public double getTotalRevenueByCountry(Predicate<Country> countryPredicate) {
-        return getMarket()
-                .getCountries()
-                .stream()
-                .filter(countryPredicate)
-                .map(Country::getStores)
-                .flatMap(List::stream)
-                .map(Store::getSections)
-                .flatMap(List::stream)
-                .map(Section::getRevenues)
-                .flatMap(List::stream)
+        return revenueStream(
+                    sectionStream(
+                        storeStream(
+                            filteredCountryStream(countryPredicate)
+                        )
+                    )
+                )
                 .mapToDouble(Month::getRevenue)
                 .sum();
     }
 
     @Override
     public double getTotalRevenueByCountryAndStore(Predicate<Country> countryPredicate, Predicate<Store> storePredicate) {
-        return getMarket()
-                .getCountries()
-                .stream()
-                .filter(countryPredicate)
-                .map(Country::getStores)
-                .flatMap(List::stream)
-                .filter(storePredicate)
-                .map(Store::getSections)
-                .flatMap(List::stream)
-                .map(Section::getRevenues)
-                .flatMap(List::stream)
+        return revenueStream(
+                    sectionStream(
+                        filteredStoreStream(
+                                filteredCountryStream(countryPredicate),
+                                storePredicate
+                       )
+                    )
+                )
                 .mapToDouble(Month::getRevenue)
                 .sum();
     }
 
     @Override
     public double getTotalRevenueByCountryAndStoreAndSection(Predicate<Country> countryPredicate, Predicate<Store> storePredicate, Predicate<Section> sectionPredicate) {
-        return getMarket()
-                .getCountries()
-                .stream()
-                .filter(countryPredicate)
-                .map(Country::getStores)
-                .flatMap(List::stream)
-                .filter(storePredicate)
-                .map(Store::getSections)
-                .flatMap(List::stream)
-                .filter(sectionPredicate)
-                .map(Section::getRevenues)
-                .flatMap(List::stream)
+        return revenueStream(
+                    filteredSectionStream(
+                        filteredStoreStream(
+                                filteredCountryStream(countryPredicate),
+                                storePredicate
+                        ),
+                        sectionPredicate
+                    )
+                )
                 .mapToDouble(Month::getRevenue)
                 .sum();
     }
