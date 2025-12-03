@@ -1,0 +1,5 @@
+- Once upon a time, data was read
+- Transformed into something, mapped
+- Filtered by a predicated, ordered
+- Even parallelized, but not finalized
+- And when a finalizer came, it was dead
