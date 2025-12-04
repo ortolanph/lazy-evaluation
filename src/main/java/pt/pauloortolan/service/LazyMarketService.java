@@ -96,12 +96,12 @@ public class LazyMarketService extends MarketService {
     @Override
     public double getTotalRevenue() {
         return revenueStream(
-                    sectionStream(
+                sectionStream(
                         storeStream(
-                            countryStream()
+                                countryStream()
                         )
-                    )
                 )
+        )
                 .mapToDouble(Month::getRevenue)
                 .sum();
     }
@@ -109,12 +109,12 @@ public class LazyMarketService extends MarketService {
     @Override
     public double getTotalRevenueByCountry(Predicate<Country> countryPredicate) {
         return revenueStream(
-                    sectionStream(
+                sectionStream(
                         storeStream(
-                            filteredCountryStream(countryPredicate)
+                                filteredCountryStream(countryPredicate)
                         )
-                    )
                 )
+        )
                 .mapToDouble(Month::getRevenue)
                 .sum();
     }
@@ -122,13 +122,13 @@ public class LazyMarketService extends MarketService {
     @Override
     public double getTotalRevenueByCountryAndStore(Predicate<Country> countryPredicate, Predicate<Store> storePredicate) {
         return revenueStream(
-                    sectionStream(
+                sectionStream(
                         filteredStoreStream(
                                 filteredCountryStream(countryPredicate),
                                 storePredicate
-                       )
-                    )
+                        )
                 )
+        )
                 .mapToDouble(Month::getRevenue)
                 .sum();
     }
@@ -136,14 +136,14 @@ public class LazyMarketService extends MarketService {
     @Override
     public double getTotalRevenueByCountryAndStoreAndSection(Predicate<Country> countryPredicate, Predicate<Store> storePredicate, Predicate<Section> sectionPredicate) {
         return revenueStream(
-                    filteredSectionStream(
+                filteredSectionStream(
                         filteredStoreStream(
                                 filteredCountryStream(countryPredicate),
                                 storePredicate
                         ),
                         sectionPredicate
-                    )
                 )
+        )
                 .mapToDouble(Month::getRevenue)
                 .sum();
     }

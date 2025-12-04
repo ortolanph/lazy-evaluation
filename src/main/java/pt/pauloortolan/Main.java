@@ -1,7 +1,6 @@
 package pt.pauloortolan;
 
 import pt.pauloortolan.loader.RevenueLoader;
-import pt.pauloortolan.service.ClassicMarketService;
 import pt.pauloortolan.service.LazyMarketService;
 import pt.pauloortolan.service.MarketService;
 import pt.pauloortolan.service.TimedMarketService;
