@@ -2,6 +2,7 @@ package pt.pauloortolan;
 
 import pt.pauloortolan.loader.RevenueLoader;
 import pt.pauloortolan.service.ClassicMarketService;
+import pt.pauloortolan.service.LazyMarketService;
 import pt.pauloortolan.service.MarketService;
 import pt.pauloortolan.service.TimedMarketService;
 
@@ -16,7 +17,7 @@ public class Main {
 
         String formattedResult = "";
 
-        MarketService service = new TimedMarketService(null, new ClassicMarketService(loader.getMarketData()));
+        MarketService service = new TimedMarketService(null, new LazyMarketService(loader.getMarketData()));
 
         System.out.println("");
         System.out.println("ALL COUNTRIES");
