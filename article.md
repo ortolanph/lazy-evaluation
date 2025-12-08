@@ -1,0 +1,1 @@
+https://javalotsofbeans.wordpress.com/2025/12/08/lazy-evaluation/
